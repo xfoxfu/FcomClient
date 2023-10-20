@@ -45,10 +45,10 @@ namespace FcomClient.Serialization
 			Console.WriteLine("-- Forwarding to " + SERVER_ADDRESS);
 			Console.WriteLine("-- " + json);
 
-			var request = new RestRequest(MESSAGE_FORWARDING_ENDPOINT, Method.POST);
+			var request = new RestRequest(MESSAGE_FORWARDING_ENDPOINT, Method.Post);
 			request.AddParameter("application/json", json, ParameterType.RequestBody);
 
-			IRestResponse response = client.Execute(request);
+			var response = client.Execute(request);
 			var content = response.Content;
 
 			// TODO: handle API response (success / error etc)

@@ -1,4 +1,4 @@
-﻿using RestSharp.Deserializers;
+﻿using System.Text.Json.Serialization;
 
 namespace FcomClient.Serialization.ApiObjects
 {
@@ -7,16 +7,16 @@ namespace FcomClient.Serialization.ApiObjects
 	/// </summary>
 	class ServerRegistrationResponse
 	{
-		[DeserializeAs(Name = "token")]
+		[JsonPropertyName("token")]
 		public string Token { get; set; }
 
-		[DeserializeAs(Name = "callsign")]
+		[JsonPropertyName("callsign")]
 		public string Callsign { get; set; }
 
-		[DeserializeAs(Name = "discord_id")]
+		[JsonPropertyName("discord_id")]
 		public long DiscordId { get; set; }
 
-		[DeserializeAs(Name = "discord_name")]
+		[JsonPropertyName("discord_name")]
 		public string DiscordName { get; set; }
 
 	}

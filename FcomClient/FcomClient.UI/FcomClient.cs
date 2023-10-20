@@ -146,7 +146,7 @@ namespace FcomClient.UI
 				else
 				{
 					int i = 0;
-					foreach (HardwareDevice h in connections)
+					foreach (var h in connections)
 					{
 						Console.WriteLine("({0})", i);
 						Console.WriteLine("------");
@@ -184,7 +184,11 @@ namespace FcomClient.UI
 
 				// open device for capturing
 				int readTimeoutMilliseconds = 2000;
-				device.Open(DeviceMode.Normal, readTimeoutMilliseconds);
+				device.Open(new DeviceConfiguration
+				{
+					Mode = DeviceModes.None,
+					ReadTimeout = readTimeoutMilliseconds
+				});
 
 				// set filter to tcp port 6809
 				device.Filter = "tcp port 6809";
@@ -232,12 +236,12 @@ namespace FcomClient.UI
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		static void OnIncomingFsdPacket(object sender, CaptureEventArgs e)
+		static void OnIncomingFsdPacket(object sender, PacketCapture e)
 		{			
 			DateTime timestamp = DateTime.Now;
 
 			// FsdPacket trims the newline, so we have to grab the byte[] ourselves
-			string pktString = System.Text.Encoding.UTF8.GetString(e.Packet.Data);
+			string pktString = System.Text.Encoding.UTF8.GetString(e.Data.ToArray());
 
 			string[] inputs = pktString.Split(new String[] { "\n" }, StringSplitOptions.None);
 			foreach (string line in inputs)
@@ -258,7 +262,7 @@ namespace FcomClient.UI
 			}
 
 			// First, create a FsdPacket object from the packet
-			FsdPacket pkt = new FsdPacket(timestamp, e.Packet.Data);			
+			FsdPacket pkt = new FsdPacket(timestamp, e.Data.ToArray());			
 
 			// Only do something if it's a PM
 			if (pkt.PacketString.StartsWith("#TM"))

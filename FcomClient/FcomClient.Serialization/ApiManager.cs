@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using FcomClient.Serialization.ApiObjects;
 using RestSharp;
-using RestSharp.Deserializers;
 
 namespace FcomClient.Serialization
 {
@@ -67,11 +67,13 @@ namespace FcomClient.Serialization
 		/// </summary>
 		public ApiManager(string token, string callsign)
 		{
-			client = new RestClient(SERVER_ADDRESS);
+			client = new RestClient(new RestClientOptions
+			{
+				BaseUrl = new Uri(SERVER_ADDRESS),
+				UserAgent = CLIENT_VERSION,
+			});
 			RestRequest registerRequest 
-				= new RestRequest(REGISTRATION_ENDPOINT, Method.GET);
-
-			client.UserAgent = CLIENT_VERSION;
+				= new RestRequest(REGISTRATION_ENDPOINT, Method.Get);
 
 			registerRequest.AddParameter("token", token);
 			registerRequest.AddParameter("callsign", callsign);
@@ -82,8 +84,8 @@ namespace FcomClient.Serialization
 
 			if (response.IsSuccessful)
 			{
-				var deserializer = new JsonDeserializer();
-				ServerRegistrationResponse returnPayload = deserializer.Deserialize<ServerRegistrationResponse>(response);
+				// var deserializer = new JsonDeserializer();
+				ServerRegistrationResponse returnPayload = response.Data; // JsonSerializer.Deserialize<ServerRegistrationResponse>(response);
 
 				this.Callsign = returnPayload.Callsign;
 				this.DiscordId = returnPayload.DiscordId;
@@ -130,7 +132,7 @@ namespace FcomClient.Serialization
 			Console.Write(" -- Forwarding to {0}...", SERVER_ADDRESS);
 
 			// Build the API request
-			var request = new RestRequest(MESSAGE_FORWARDING_ENDPOINT, Method.POST)
+			var request = new RestRequest(MESSAGE_FORWARDING_ENDPOINT, Method.Post)
 			{
 				RequestFormat = DataFormat.Json
 			};
@@ -156,7 +158,7 @@ namespace FcomClient.Serialization
 				messages = messageList
 			});
 
-			IRestResponse response = client.Execute(request);
+			var response = client.Execute(request);
 			var content = response.Content;
 
 			if (response.IsSuccessful)

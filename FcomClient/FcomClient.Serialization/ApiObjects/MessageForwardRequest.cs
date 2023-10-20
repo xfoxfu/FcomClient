@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using RestSharp.Serializers;
+using System.Text.Json.Serialization;
 
 namespace FcomClient.Serialization.ApiObjects
 {
@@ -8,13 +8,13 @@ namespace FcomClient.Serialization.ApiObjects
 	/// </summary>
 	class MessageForwardRequest
 	{
-		[SerializeAs(Name ="token")]
+		[JsonPropertyName("token")]
 		public string Token { get; set; }
 
-		[SerializeAs(Name = "discord_id")]
+		[JsonPropertyName("discord_id")]
 		public long DiscordId { get; set; }
 
-		[SerializeAs(Name = "messages")]
+		[JsonPropertyName("messages")]
 		public List<TextMessage> Messages { get; set; }
 
 		public MessageForwardRequest(string token, long discordId)
@@ -31,16 +31,16 @@ namespace FcomClient.Serialization.ApiObjects
 
 	class TextMessage {
 
-		[SerializeAs(Name = "timestamp")]
+		[JsonPropertyName("timestamp")]
 		public string Timestamp { get; set; }
 
-		[SerializeAs(Name = "sender")]
+		[JsonPropertyName("sender")]
 		public string Sender { get; set; }
 
-		[SerializeAs(Name = "recipient")]
+		[JsonPropertyName("recipient")]
 		public string Recipient { get; set; }
 
-		[SerializeAs(Name = "message")]
+		[JsonPropertyName("message")]
 		public string Message { get; set; }
 	}
 
